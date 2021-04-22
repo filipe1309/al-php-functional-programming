@@ -20,37 +20,15 @@ This project was developed following Alura's [PHP: Programação Funcional](http
 ## :cd: Installation
 
 ```sh
-git clone [PROJECT_REPO_LINK]
+git clone git@github.com:filipe1309/alura-php-functional-programming.git
 ```
 
 ```sh
-cd [PROJECT_REPO_NAME]
+cd alura-php-functional-programming
 ```
 
 ```sh
 composer install
-```
-
-## :runner: Running
-
-**Up app**
-
-```sh
-./bin/runenv.sh
-```
-
-## Usage
-
-```sh
-./bin/runenv.sh
-```
-
-## :white_check_mark: Tests
-
-After up the container:
-
-```sh
-docker exec -t CONTAINER_NAME ./vendor/bin/phpunit --testdox
 ```
 
 ## Contributing
