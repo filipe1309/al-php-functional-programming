@@ -68,16 +68,22 @@ $medalhas  = array_reduce(
     'somaMedalhas'
 );
 
+function comparaMedalhas(array $medalhasPais1, array $medalhasPais2): callable
+{
+    return function ($modalidade) use ($medalhasPais1, $medalhasPais2): int {
+        return $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
+    };
+}
+
 usort($dados, function (array $pais1, array $pais2) {
     $medalhasPais1 = $pais1['medalhas'];
     $medalhasPais2 = $pais2['medalhas'];
+    $comparador = comparaMedalhas($medalhasPais1, $medalhasPais2);
 
-    $comparacaoOuro = $medalhasPais2['ouro'] <=> $medalhasPais1['ouro'];
-    $comparacaoPrata = $medalhasPais2['prata'] <=> $medalhasPais1['prata'];
-    $comparacaoBronze = $medalhasPais2['bronze'] <=> $medalhasPais1['bronze'];
-    return $comparacaoOuro !== 0 ? $comparacaoOuro
-        : ($comparacaoPrata !== 0 ? $comparacaoPrata
-            : $comparacaoBronze);
+    // return $comparador('ouro') !== 0 ?? ($comparador('prata') !== 0 ?? $comparador('bronze'));
+    return $comparador('ouro') !== 0 ? $comparador('ouro')
+        : ($comparador('prata') !== 0 ? $comparador('prata')
+            : $comparador('bronze'));
 });
 
 var_dump($dados);
