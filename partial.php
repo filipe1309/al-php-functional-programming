@@ -8,9 +8,9 @@ function dividir($a, $b)
 
 // High Order Function
 // Curried
-function dividirPor(int $divisor)
+function dividirPor(int $divisor): callable
 {
-    return function ($numero) use ($divisor) {
+    return function ($numero) use ($divisor): float {
         return dividir($numero, $divisor);
     };
 }
@@ -21,3 +21,4 @@ $dividirPor2Func = dividirPor(2);
 echo $dividirPor2Func(4) . PHP_EOL;
 echo $dividirPor2Func(5) . PHP_EOL;
 echo $dividirPor2Func(10) . PHP_EOL;
+echo dividirPor(2)(20) . PHP_EOL;
