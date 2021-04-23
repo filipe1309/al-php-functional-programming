@@ -53,12 +53,35 @@ function verificaSePaisTemEspacoNoNome(array $pais): bool
 $dados = array_map('convertePaisPraLetraMaiuscula', $dados);
 $dados = array_filter($dados, 'verificaSePaisTemEspacoNoNome');
 
+
+// function medalhasTotaisAcumuladas($acc, array $pais): int
+// {
+//     return $acc + array_reduce($pais['medalhas'], 'somaMedalhas');
+// }
+
+// echo array_reduce($dados, 'medalhasTotaisAcumuladas')  . PHP_EOL;
+
+$medalhas  = array_reduce(
+    array_map(function (array $medalhas) {
+        return array_reduce($medalhas, 'somaMedalhas');
+    }, array_column($dados, 'medalhas')),
+    'somaMedalhas'
+);
+
+usort($dados, function (array $pais1, array $pais2) {
+    $medalhasPais1 = $pais1['medalhas'];
+    $medalhasPais2 = $pais2['medalhas'];
+
+    $comparacaoOuro = $medalhasPais2['ouro'] <=> $medalhasPais1['ouro'];
+    $comparacaoPrata = $medalhasPais2['prata'] <=> $medalhasPais1['prata'];
+    $comparacaoBronze = $medalhasPais2['bronze'] <=> $medalhasPais1['bronze'];
+    return $comparacaoOuro !== 0 ? $comparacaoOuro
+        : ($comparacaoPrata !== 0 ? $comparacaoPrata
+            : $comparacaoBronze);
+});
+
 var_dump($dados);
 
-function medalhasTotaisAcumuladas($acc, array $pais): int
-{
-    return $acc + array_reduce($pais['medalhas'], 'somaMedalhas');
-}
+echo $medalhas;
 
-echo array_reduce($dados, 'medalhasTotaisAcumuladas')  . PHP_EOL;
 # End Class 2
