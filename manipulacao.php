@@ -2,6 +2,23 @@
 
 $dados = require 'dados.php';
 
+# Class 2
+$brasil = $dados[0];
+
+function somaMedalhas($acc, $actual)
+{
+    return $acc + $actual;
+}
+
+$numMedadalhas = array_reduce($brasil['medalhas'], 'somaMedalhas');
+
+echo $numMedadalhas . PHP_EOL;
+
+// exit();
+# End Class 2
+
+
+# Class 1
 $contador = 0;
 
 // Imperative way
@@ -18,6 +35,7 @@ $contador = 0;
 $contador = count($dados);
 
 echo "Número de países: $contador\n";
+# End Class 1
 
 # Class 2
 function convertePaisPraLetraMaiuscula(array $pais): array
@@ -36,3 +54,11 @@ $dados = array_map('convertePaisPraLetraMaiuscula', $dados);
 $dados = array_filter($dados, 'verificaSePaisTemEspacoNoNome');
 
 var_dump($dados);
+
+function medalhasTotaisAcumuladas($acc, array $pais): int
+{
+    return $acc + array_reduce($pais['medalhas'], 'somaMedalhas');
+}
+
+echo array_reduce($dados, 'medalhasTotaisAcumuladas')  . PHP_EOL;
+# End Class 2
