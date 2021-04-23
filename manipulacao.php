@@ -18,3 +18,14 @@ $contador = 0;
 $contador = count($dados);
 
 echo "Número de países: $contador\n";
+
+# Class 2
+function convertePaisPraLetraMaiuscula(array $pais)
+{
+    $pais['pais'] = mb_convert_case($pais['pais'], MB_CASE_UPPER);
+    return $pais;
+};
+
+$arrayModificado = array_map('convertePaisPraLetraMaiuscula', $dados);
+
+var_dump($arrayModificado);
