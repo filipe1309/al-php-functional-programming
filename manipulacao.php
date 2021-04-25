@@ -1,5 +1,7 @@
 <?php
 
+require_once 'vendor/autoload.php';
+
 $dados = require 'dados.php';
 
 # Class 2
@@ -47,17 +49,19 @@ $verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['p
 $nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisPraLetraMaiuscula', $dados);
 $filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
-function pipe(callable ...$funcoes): callable
-{
-    return fn ($valor) => array_reduce(
-        $funcoes,
-        fn ($valorCumulado, $funcaoAtual) => $funcaoAtual($valorCumulado),
-        $valor
-    );
-}
+// function pipe(callable ...$funcoes): callable
+// {
+//     return fn ($valor) => array_reduce(
+//         $funcoes,
+//         fn ($valorCumulado, $funcaoAtual) => $funcaoAtual($valorCumulado),
+//         $valor
+//     );
+// }
 
-$funcoes = pipe($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
-// $dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
+// $funcoes = pipe($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
+// // $dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
+
+$funcoes = \igorw\pipeline($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
 $dados = $funcoes($dados);
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
