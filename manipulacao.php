@@ -1,5 +1,7 @@
 <?php
 
+require_once 'vendor/autoload.php';
+
 $dados = require 'dados.php';
 
 # Class 2
@@ -41,13 +43,26 @@ function convertePaisPraLetraMaiuscula(array $pais): array
     return $pais;
 }
 
-$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' ');
-// PHP 8+
+$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' '); // PHP 8+
 //return strpos($pais['pais'], ' ') !== false; // PHP 7.4
 
-$dados = array_map('convertePaisPraLetraMaiuscula', $dados);
-$dados = array_filter($dados, $verificaSePaisTemEspacoNoNome);
+$nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisPraLetraMaiuscula', $dados);
+$filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
+// function pipe(callable ...$funcoes): callable
+// {
+//     return fn ($valor) => array_reduce(
+//         $funcoes,
+//         fn ($valorCumulado, $funcaoAtual) => $funcaoAtual($valorCumulado),
+//         $valor
+//     );
+// }
+
+// $funcoes = pipe($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
+// // $dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
+
+$funcoes = \igorw\pipeline($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
+$dados = $funcoes($dados);
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
 // {
