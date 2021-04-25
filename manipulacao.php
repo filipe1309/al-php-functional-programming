@@ -5,12 +5,9 @@ $dados = require 'dados.php';
 # Class 2
 $brasil = $dados[0];
 
-function somaMedalhas($acc, $actual)
-{
-    return $acc + $actual;
-}
+$somaMedalhas = fn ($acc, $actual) => $acc + $actual;
 
-$numMedadalhas = array_reduce($brasil['medalhas'], 'somaMedalhas');
+$numMedadalhas = array_reduce($brasil['medalhas'], $somaMedalhas);
 
 echo $numMedadalhas . PHP_EOL;
 
@@ -44,41 +41,33 @@ function convertePaisPraLetraMaiuscula(array $pais): array
     return $pais;
 }
 
-function verificaSePaisTemEspacoNoNome(array $pais): bool
-{
-    return str_contains($pais['pais'], ' '); // PHP 8+
-    //return strpos($pais['pais'], ' ') !== false; // PHP 7.4
-}
+$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' ');
+// PHP 8+
+//return strpos($pais['pais'], ' ') !== false; // PHP 7.4
 
 $dados = array_map('convertePaisPraLetraMaiuscula', $dados);
-$dados = array_filter($dados, 'verificaSePaisTemEspacoNoNome');
+$dados = array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
 // {
-//     return $acc + array_reduce($pais['medalhas'], 'somaMedalhas');
+//     return $acc + array_reduce($pais['medalhas'], $somaMedalhas);
 // }
 
 // echo array_reduce($dados, 'medalhasTotaisAcumuladas')  . PHP_EOL;
 
 $medalhas  = array_reduce(
-    array_map(function (array $medalhas) {
-        return array_reduce($medalhas, 'somaMedalhas');
-    }, array_column($dados, 'medalhas')),
-    'somaMedalhas'
+    array_map(fn (array $medalhas) => array_reduce($medalhas, $somaMedalhas), array_column($dados, 'medalhas')),
+    $somaMedalhas
 );
 
-function comparaMedalhas(array $medalhasPais1, array $medalhasPais2): callable
-{
-    return function ($modalidade) use ($medalhasPais1, $medalhasPais2): int {
-        return $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
-    };
-}
+$comparaMedalhas = fn (array $medalhasPais1, array $medalhasPais2): callable
+=> fn ($modalidade): int => $medalhasPais2[$modalidade] <=> $medalhasPais1[$modalidade];
 
-usort($dados, function (array $pais1, array $pais2) {
+usort($dados, function (array $pais1, array $pais2) use ($comparaMedalhas) {
     $medalhasPais1 = $pais1['medalhas'];
     $medalhasPais2 = $pais2['medalhas'];
-    $comparador = comparaMedalhas($medalhasPais1, $medalhasPais2);
+    $comparador = $comparaMedalhas($medalhasPais1, $medalhasPais2);
 
     // return $comparador('ouro') !== 0 ?? ($comparador('prata') !== 0 ?? $comparador('bronze'));
     return $comparador('ouro') !== 0 ? $comparador('ouro')
@@ -88,6 +77,6 @@ usort($dados, function (array $pais1, array $pais2) {
 
 var_dump($dados);
 
-echo $medalhas;
+echo $medalhas . PHP_EOL;
 
 # End Class 2
