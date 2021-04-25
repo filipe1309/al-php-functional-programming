@@ -1,17 +1,20 @@
 <?php
 
+use Alura\Fp\Maybe;
+
 require_once 'vendor/autoload.php';
 
+/** @var Maybe */
 $dados = require 'dados.php';
 
 # Class 2
-$brasil = $dados[0];
+// $brasil = $dados[0];
 
-$somaMedalhas = fn ($acc, $actual) => $acc + $actual;
+// $somaMedalhas = fn ($acc, $actual) => $acc + $actual;
 
-$numMedadalhas = array_reduce($brasil['medalhas'], $somaMedalhas);
+// $numMedadalhas = array_reduce($brasil['medalhas'], $somaMedalhas);
 
-echo $numMedadalhas . PHP_EOL;
+// echo $numMedadalhas . PHP_EOL;
 
 // exit();
 # End Class 2
@@ -31,7 +34,7 @@ $contador = 0;
 // });
 
 // Another way v2
-$contador = count($dados);
+$contador = count($dados->getOrElse([]));
 
 echo "Número de países: $contador\n";
 # End Class 1
@@ -46,8 +49,8 @@ function convertePaisPraLetraMaiuscula(array $pais): array
 $verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' '); // PHP 8+
 //return strpos($pais['pais'], ' ') !== false; // PHP 7.4
 
-$nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisPraLetraMaiuscula', $dados);
-$filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePaisTemEspacoNoNome);
+$nomeDePaisesEmMaiusculo = fn (Maybe $dados) => Maybe::of(array_map('convertePaisPraLetraMaiuscula', $dados->getOrElse([])));
+$filtraPaisesSemEspacoNoNome = fn (Maybe $dados) => Maybe::of(array_filter($dados->getOrElse([]), $verificaSePaisTemEspacoNoNome));
 
 // function pipe(callable ...$funcoes): callable
 // {
@@ -63,6 +66,9 @@ $filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePa
 
 $funcoes = \igorw\pipeline($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
 $dados = $funcoes($dados);
+
+var_dump($dados->getOrElse([]));
+exit();
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
 // {
