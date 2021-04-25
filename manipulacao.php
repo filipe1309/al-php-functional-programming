@@ -41,14 +41,24 @@ function convertePaisPraLetraMaiuscula(array $pais): array
     return $pais;
 }
 
-$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' ');
-// PHP 8+
+$verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['pais'], ' '); // PHP 8+
 //return strpos($pais['pais'], ' ') !== false; // PHP 7.4
 
 $nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisPraLetraMaiuscula', $dados);
 $filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
-$dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
+function pipe(callable ...$funcoes): callable
+{
+    return fn ($valor) => array_reduce(
+        $funcoes,
+        fn ($valorCumulado, $funcaoAtual) => $funcaoAtual($valorCumulado),
+        $valor
+    );
+}
+
+$funcoes = pipe($nomeDePaisesEmMaiusculo, $filtraPaisesSemEspacoNoNome);
+// $dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
+$dados = $funcoes($dados);
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
 // {
