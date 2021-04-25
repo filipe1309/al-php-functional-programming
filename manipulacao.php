@@ -45,9 +45,10 @@ $verificaSePaisTemEspacoNoNome = fn (array $pais): bool => str_contains($pais['p
 // PHP 8+
 //return strpos($pais['pais'], ' ') !== false; // PHP 7.4
 
-$dados = array_map('convertePaisPraLetraMaiuscula', $dados);
-$dados = array_filter($dados, $verificaSePaisTemEspacoNoNome);
+$nomeDePaisesEmMaiusculo = fn ($dados) => array_map('convertePaisPraLetraMaiuscula', $dados);
+$filtraPaisesSemEspacoNoNome = fn ($dados) => array_filter($dados, $verificaSePaisTemEspacoNoNome);
 
+$dados = $filtraPaisesSemEspacoNoNome($nomeDePaisesEmMaiusculo($dados));
 
 // function medalhasTotaisAcumuladas($acc, array $pais): int
 // {
